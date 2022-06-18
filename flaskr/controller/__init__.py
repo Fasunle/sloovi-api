@@ -1,8 +1,14 @@
 from flask import (
     Blueprint,
+    abort,
     redirect,
     request,
     url_for
+)
+
+from model import (
+    User,
+    Template
 )
 
 # version 1.0
@@ -29,7 +35,29 @@ def register_user():
     Returns:
         redirect to login route
     """
-    return "Hello register"
+    # parse clients data
+    first_name = request.json.get("first_name")
+    last_name = request.json.get("last_name")
+    email = request.json.get("email")
+    # TODO: Hash the password and save the hased one instead
+    password = request.json.get("password")
+    
+    if first_name == None and last_name == None and email == None and password == None:
+        abort(400)
+        
+    try:
+    
+        user = User(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            password=password
+        )
+        user.save()
+    except:
+        return "Failed to create a new template", 400
+    
+    return redirect(url_for("api_v1.login_user"))
 
 
 @api_v1.route("/login", methods=["POST", "GET"])
