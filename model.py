@@ -114,3 +114,14 @@ class User:
         else:
             self._user.delete_one({'email': self.email})
             return f"User with email {self.email} has been deleted!"
+
+class Template:
+    """Template Model with PyMongo"""
+    
+    # database template document
+    _template = database.template
+    
+    def __init__(self, name, subject, body) -> None:
+        self.name = name
+        self.subject = subject
+        self.body = body
