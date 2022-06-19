@@ -167,3 +167,19 @@ class Template:
         self._template.insert_one(template_data)
         
         return "Template with the name {self.name} has been created!"
+
+      
+    def fetch_all(self):
+        '''Fetch all templates'''
+        
+        templates_cursor = self._template.find()
+        
+        # https://www.digitalocean.com/community/tutorials/understanding-list-comprehensions-in-python-3
+        
+        formatted_templates = [
+            self.format(template)
+            for template in templates_cursor
+        ]
+        
+        return formatted_templates
+    
