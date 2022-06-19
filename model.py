@@ -51,3 +51,35 @@ class User:
                 return "An Error occured while creating a new User. Please try again!", 400
             
             return f"A new User with email {self.email} was created."
+        
+       
+    
+    def fetch(self, email):
+        '''Get a single User'''
+        
+        user = self._user.find_one({"email": email})
+        
+        if user == None:
+            return "User does not exist.", 404
+        
+        # format the data returned
+        return self.format(user)
+    
+    
+    def format(self, user):
+        """Format User data
+
+            user = {
+                "name": "Kehinde Fasunle",
+                "email": "kfasunle@gmail.com",
+                "password": "536qrtdyugy7eq6tqet"
+            }
+            
+            Note: password hash is saved to the database
+        """
+        return {
+            "id": str(user.get("_id")),
+            "name": user.get("name"),
+            "email": user.get("email"),
+            "password": user.get("password")
+        }
