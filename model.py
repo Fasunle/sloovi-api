@@ -1,3 +1,4 @@
+from bson import ObjectId
 from pymongo import MongoClient
 from bson.json_util import dumps
 from config import MONGO_DATABASE_URI
@@ -215,4 +216,12 @@ class Template:
         self._template.update_one({"name": self.name}, {"$set": template_update})
         
         return "Template Update successfully"
-                
+
+
+    def delete(self, id):
+        '''Delete a Template and return None if not found'''
+        
+        deleted = self._template.find_one_and_delete({"_id": ObjectId(id)})
+        
+        return deleted
+     
