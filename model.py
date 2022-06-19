@@ -125,3 +125,21 @@ class Template:
         self.name = name
         self.subject = subject
         self.body = body
+    
+    
+    def create(self):
+        '''Create a new Template'''
+        
+        template_filter = {"name": self.name, "subject": self.subject}
+        template_data = {"name": self.name, "subject": self.subject, "body": self.body}
+        
+        # find if template already exist
+        template = self._template.find_one(template_filter)
+                
+        if template != None:
+            return f"Template with this name '{self.name}'  and subject exist!", 400
+        
+        # template does not exist, so create it
+        self._template.insert_one(template_data)
+        
+        return "Template with the name {self.name} has been created!"
