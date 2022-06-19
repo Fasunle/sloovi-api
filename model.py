@@ -101,3 +101,16 @@ class User:
         self._user.update_one({'email': self.email}, {"$set": user_update})
         
         return f"Updated User with email {self.email}"
+    
+    
+    def delete(self):
+        '''Delete a User'''
+        
+        user = self.fetch(self.email)
+        
+        if user == None:
+            return f"User with email {self.email} does not exist!", 404
+        
+        else:
+            self._user.delete_one({'email': self.email})
+            return f"User with email {self.email} has been deleted!"
