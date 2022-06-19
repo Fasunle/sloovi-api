@@ -183,3 +183,17 @@ class Template:
         
         return formatted_templates
     
+    
+    def fetch_one(self, name):
+        """Fetch a Template with a given template name. This does not guaranty
+        that the template is unique and will always be returned.
+        """
+        
+        template = self._template.find_one({"name": name})
+        
+        # if template does not exist
+        if template == None:
+            return "Template with this name: {name} does not exist", 404
+        
+        return self.format(template)
+    
