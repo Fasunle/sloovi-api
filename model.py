@@ -208,32 +208,13 @@ class Template:
             'body': body
         }
 
-        template = self._template.find_one_and_delete({"_id": ObjectId(id)}, {"$set": template_update})
+        template = self._template.find_one_and_update({"_id": ObjectId(id)}, {"$set": template_update})
         
         if template == None:
             return f"Template with id: {id} was not found", 404
         else:
             return template
         
-            
-    def update(self):
-        '''Update a Template with new data. The name must be unique.'''
-        
-        template_update = {
-            "subject": self.subject,
-            "body": self.body
-        }
-        
-        template = self._template.find_one({"name": self.name})
-        
-        if template == None:
-            return f"There is no such template with {self.name}", 404
-        
-        # update a template
-        self._template.update_one({"name": self.name}, {"$set": template_update})
-        
-        return "Template Update successfully"
-
 
     def delete(self, id):
         '''Delete a Template and return None if not found'''
