@@ -60,7 +60,7 @@ class User:
         user = self._user.find_one({"email": email})
         
         if user == None:
-            return "User does not exist.", 404
+            return
         
         # format the data returned
         return self.format(user)
@@ -83,3 +83,22 @@ class User:
             "email": user.get("email"),
             "password": user.get("password")
         }
+        
+    def update(self):
+        '''Update a User'''
+        
+        user_update = {
+            "name": self.name,
+            "email": self.email,
+            "password": self.password
+        }
+        
+        user = self.fetch(self.email)
+        
+        if user == None:
+            return f"Create a User. User with emal {self.email}", 400
+        
+        user_id = user.get("id")
+        self._user.update_one({'_id': user_id}, {"$set": user_update})
+        
+        return f"Updated User with email {self.email}"
