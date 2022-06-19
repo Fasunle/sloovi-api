@@ -198,7 +198,24 @@ class Template:
         
         return self.format(template)
 
-    
+
+    def update(self, id, name, subject, body):
+        '''Update a Template with a given id and other parameters'''
+        
+        template_update = {
+            'name': name,
+            'subject': subject,
+            'body': body
+        }
+
+        template = self._template.find_one_and_delete({"_id": ObjectId(id)}, {"$set": template_update})
+        
+        if template == None:
+            return f"Template with id: {id} was not found", 404
+        else:
+            return template
+        
+            
     def update(self):
         '''Update a Template with new data. The name must be unique.'''
         
