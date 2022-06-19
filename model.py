@@ -216,7 +216,7 @@ class Template:
             return template
         
 
-    def delete(self, id):
+    def delete_by_id(self, id):
         '''Delete a Template and return None if not found'''
         
         deleted = self._template.find_one_and_delete({"_id": ObjectId(id)})
