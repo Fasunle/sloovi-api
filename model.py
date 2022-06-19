@@ -98,7 +98,6 @@ class User:
         if user == None:
             return f"Create a User. User with email {self.email}", 404
         
-        user_id = user.get("id")
-        self._user.update_one({'_id': user_id}, {"$set": user_update})
+        self._user.update_one({'email': self.email}, {"$set": user_update})
         
         return f"Updated User with email {self.email}"
