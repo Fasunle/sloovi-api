@@ -1,3 +1,4 @@
+from bson import ObjectId
 from pymongo import MongoClient
 from bson.json_util import dumps
 from config import MONGO_DATABASE_URI
@@ -125,3 +126,106 @@ class Template:
         self.name = name
         self.subject = subject
         self.body = body
+        
+        
+    def format(self, template):
+        """Formats the Template data given a dictionary
+
+        Args:
+            template (dict): Template dictionary
+                {
+                    "_id": "vdaey8tw78dtas",
+                    "template_name": "School",
+                    "subject": "How to excel",
+                    "body": "Strong determination not to fail"
+                }
+
+        Returns:
+            String: Message object
+        """
+
+        return {
+            "id": str(template.get("_id")),
+            "template_name": template.get("name"),
+            "subject": template.get("subject"),
+            "body": template.get("body")
+        }
+    
+    
+    def create(self):
+        '''Create a new Template'''
+        
+        template_filter = {"name": self.name, "subject": self.subject}
+        template_data = {"name": self.name, "subject": self.subject, "body": self.body}
+        
+        # find if template already exist
+        template = self._template.find_one(template_filter)
+                
+        if template != None:
+            return f"Template with this name '{self.name}'  and subject exist!", 400
+        
+        # template does not exist, so create it
+        self._template.insert_one(template_data)
+        
+        return "Template with the name {self.name} has been created!"
+
+      
+    def fetch_all(self):
+        '''Fetch all templates'''
+        
+        templates_cursor = self._template.find()
+        
+        # https://www.digitalocean.com/community/tutorials/understanding-list-comprehensions-in-python-3
+        
+        formatted_templates = [
+            self.format(template)
+            for template in templates_cursor
+        ]
+        
+        return formatted_templates
+    
+    
+    def fetch_one(self, id):
+        """Fetch a Template with a given template id. This does not guaranty
+        that the template is unique and will always be returned.
+        """
+        
+        template = self._template.find_one({"_id": ObjectId(id)})
+        
+        # if template does not exist
+        if template == None:
+            return "Template with this name: {id} does not exist", 404
+        
+        return self.format(template)
+
+
+    def update(self, id, name, subject, body):
+        '''Update a Template with a given id and other parameters'''
+        
+        template_update = {
+            'name': name,
+            'subject': subject,
+            'body': body
+        }
+
+        template = self._template.find_one_and_update({"_id": ObjectId(id)}, {"$set": template_update})
+        
+        if template == None:
+            return f"Template with id: {id} was not found", 404
+        else:
+            return template
+        
+
+    def delete_by_id(self, id):
+        '''Delete a Template and return None if not found'''
+        
+        deleted = self._template.find_one_and_delete({"_id": ObjectId(id)})
+        
+        return deleted
+    
+    def delete(self):
+        '''Delete a user without id'''
+        
+        deleted = self._template.find_one_and_delete({"name": self.name})
+        
+        return deleted
