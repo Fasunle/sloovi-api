@@ -224,4 +224,10 @@ class Template:
         deleted = self._template.find_one_and_delete({"_id": ObjectId(id)})
         
         return deleted
-     
+    
+    def delete(self):
+        '''Delete a user without id'''
+        
+        deleted = self._template.find_one_and_delete({"name": self.name})
+        
+        return deleted
