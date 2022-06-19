@@ -125,6 +125,30 @@ class Template:
         self.name = name
         self.subject = subject
         self.body = body
+        
+        
+    def format(self, template):
+        """Formats the Template data given a dictionary
+
+        Args:
+            template (dict): Template dictionary
+                {
+                    "_id": "vdaey8tw78dtas",
+                    "template_name": "School",
+                    "subject": "How to excel",
+                    "body": "Strong determination not to fail"
+                }
+
+        Returns:
+            String: Message object
+        """
+
+        return {
+            "id": str(template.get("_id")),
+            "template_name": template.get("name"),
+            "subject": template.get("subject"),
+            "body": template.get("body")
+        }
     
     
     def create(self):
