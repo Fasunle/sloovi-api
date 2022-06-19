@@ -196,4 +196,23 @@ class Template:
             return "Template with this name: {name} does not exist", 404
         
         return self.format(template)
+
     
+    def update(self):
+        '''Update a Template with new data. The name must be unique.'''
+        
+        template_update = {
+            "subject": self.subject,
+            "body": self.body
+        }
+        
+        template = self._template.find_one({"name": self.name})
+        
+        if template == None:
+            return f"There is no such template with {self.name}", 404
+        
+        # update a template
+        self._template.update_one({"name": self.name}, {"$set": template_update})
+        
+        return "Template Update successfully"
+                
