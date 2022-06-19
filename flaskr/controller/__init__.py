@@ -72,7 +72,38 @@ def login_user():
     Returns:
         returns login token if the user is registered otherwise, redirect to register route
     """
-    return "Hello login"
+    
+    # redirect from register_user
+    if request.method == "GET":
+        email = request.args.get("email")
+        password = request.args.get("password")
+        
+        user = User.fetch(email)
+        
+        if user == None:
+            return "Please Register and login again", 401
+        
+        else:
+            # TODO generate token
+            return generate_token(user)
+        
+    # parse client data
+    data = json.loads(request.data)
+    password = data.get("password")
+    email = data.get("email")
+        
+    if (email == '' or None) and (password == '' or None):
+        abort(400)
+        
+    user = User.fetch(email)
+    
+    if user == None:
+            return "Please Register and login again", 401
+        
+    # TODO generate token
+    return generate_token(user)
+    
+
 
 
 @api_v1.route("/template", methods=["GET"])
