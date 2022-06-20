@@ -2,6 +2,7 @@ import json
 from flask import (
     Blueprint,
     abort,
+    jsonify,
     redirect,
     request,
     url_for
@@ -123,7 +124,9 @@ def show_all_templates():
     Returns:
         list: A list of all templates
     """
-    return "Hello template"
+    
+    template = Template.fetch_all()
+    return jsonify(template)
 
 
 @api_v1.route("/template/<int:id>", methods=["GET"])
