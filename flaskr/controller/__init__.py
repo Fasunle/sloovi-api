@@ -178,7 +178,7 @@ def create_template():
     return template
 
 
-@api_v1.route("/template/<int:id>", methods=["PUT"])
+@api_v1.route("/template/<string:id>", methods=["PUT"])
 def update_template(id):
     """Update Single Template
 
@@ -188,7 +188,26 @@ def update_template(id):
     Returns:
         - success message
     """
-    return f"Hello Template with Id {id}"
+    # parse data from the client
+    data = json.loads(request.data)
+    
+    print(data)
+    
+    if data.get("template_name") is None:
+        return "Template Name is Required"
+    
+    elif data.get("subject") is None:
+        return "Template Subject is Required"
+    
+    elif data.get("body") is None:
+        return "Template Body is Required"
+    
+    name = data.get("template_name")
+    subject = data.get("subject")
+    body = data.get("body")
+    
+    template = Template.update(id, name, subject, body)
+    return template
 
 
 @api_v1.route("/template/<int:id>", methods=["DELETE"])
