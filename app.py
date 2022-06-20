@@ -6,7 +6,7 @@
 
 from flask import Flask
 from config import SESSION_SECRET
-from flaskr.controller import api_v1
+from controller import api_v1
 
 
 
