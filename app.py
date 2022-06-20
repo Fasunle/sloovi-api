@@ -5,22 +5,24 @@
 """
 
 from flask import Flask
+from flask_cors import CORS
 from config import SESSION_SECRET
+
+"""Create Flask Application and configure it
+
+Returns:
+    Object: Application instance
+"""
+
 from controller import api_v1
 
+app = Flask(__name__)
 
+app.config["SECRET_KEY"] = SESSION_SECRET
 
-def create_app():
-    """Create Flask Application and configure it
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-    Returns:
-        Object: Application instance
-    """
-    
-    app = Flask(__name__)
-    
-    app.config["SECRET_KEY"] = SESSION_SECRET
-    
-    app.register_blueprint(api_v1, url_prefix="/api/v1")
-    
-    return app
+app.register_blueprint(api_v1, url_prefix="/api/v1")
+
+if __name__ == "__main__":
+    app.run()
