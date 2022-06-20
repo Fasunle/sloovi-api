@@ -1,3 +1,4 @@
+import json
 from flask import (
     Blueprint,
     abort,
@@ -5,7 +6,7 @@ from flask import (
     request,
     url_for
 )
-
+from sloovi_utils import generate_hash, generate_token, login_required
 from model import (
     User,
     Template
@@ -18,10 +19,10 @@ api_v1 = Blueprint("api_v1", __name__)
 
 @api_v1.route('/', methods=["GET"])
 def index():
-    return redirect(url_for("api_v1.login_user"))
+    return "<h1>Hello @Sloovi API developed by Kehinde Fasunle</h1>"
 
 
-@api_v1.route("/register", methods=["POST"])
+@api_v1.route("/register", methods=["POST", "GET"])
 def register_user():
     """Register a new user
     
@@ -53,25 +54,20 @@ def register_user():
     first_name = request.json.get("first_name")
     last_name = request.json.get("last_name")
     email = request.json.get("email")
-    # TODO: Hash the password and save the hased one instead
-    password = request.json.get("password")
+    # Hash the password and save the hased one instead
+    password = generate_hash( request.json.get("password"))
     
     if first_name == None and last_name == None and email == None and password == None:
         abort(400)
-        
+    name = '{} {}'.format(first_name, last_name)
     try:
     
-        user = User(
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password
-        )
-        user.save()
+        user = User(name, email, password)
+        user.create()
     except:
         return "Failed to create a new template", 400
     
-    return redirect(url_for("api_v1.login_user"))
+    return redirect(url_for("api_v1.login_user", email=email, password=password))
 
 
 @api_v1.route("/login", methods=["POST", "GET"])
@@ -98,7 +94,7 @@ def login_user():
             return "Please Register and login again", 401
         
         else:
-            # TODO generate token
+            # generate token
             return generate_token(user)
         
     # parse client data
@@ -114,7 +110,7 @@ def login_user():
     if user == None:
             return "Please Register and login again", 401
         
-    # TODO generate token
+    # generate token
     return generate_token(user)
     
 
