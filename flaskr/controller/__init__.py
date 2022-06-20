@@ -1,4 +1,5 @@
 import json
+from re import sub
 from flask import (
     Blueprint,
     abort,
@@ -157,7 +158,24 @@ def create_template():
         - a success message
         - created a new template
     """
-    return "Created a template"
+    # parse data from the client
+    data = json.loads(request.data)
+    
+    if data.get("template_name") is None:
+        return "Template Name is Required"
+    
+    elif data.get("subject") is None:
+        return "Template Subject is Required"
+    
+    elif data.get("body") is None:
+        return "Template Body is Required"
+    
+    name = data.get("template_name")
+    subject = data.get("template_subject")
+    body = data.get("template_body")
+    
+    template = Template(name, subject, body).create()
+    return template
 
 
 @api_v1.route("/template/<int:id>", methods=["PUT"])
