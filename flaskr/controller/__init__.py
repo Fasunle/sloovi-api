@@ -35,6 +35,20 @@ def register_user():
     Returns:
         redirect to login route
     """
+    # redirect from register_user
+    if request.method == "GET":
+        email = request.args.get("email")
+        password = request.args.get("password")
+        
+        user = User.fetch(email)
+        
+        if user == None:
+            return "Please Register and login again", 401
+        
+        else:
+            # generate token
+            return generate_token(user)
+        
     # parse clients data
     first_name = request.json.get("first_name")
     last_name = request.json.get("last_name")
