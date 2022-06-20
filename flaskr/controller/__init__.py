@@ -129,7 +129,7 @@ def show_all_templates():
     return jsonify(template)
 
 
-@api_v1.route("/template/<int:id>", methods=["GET"])
+@api_v1.route("/template/<string:id>", methods=["GET"])
 def show_template_by_id(id):
     """Get A Template
 
@@ -139,7 +139,8 @@ def show_template_by_id(id):
     Returns:
         object: template
     """
-    return f"Hello Template with Id {id}"
+    template = Template.fetch_one(id)
+    return jsonify(template)
 
 
 @api_v1.route("/template", methods=["POST"])
