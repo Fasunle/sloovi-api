@@ -1,7 +1,9 @@
 from bson import ObjectId
+from flask import abort
 from pymongo import MongoClient
 from bson.json_util import dumps
 from config import MONGO_DATABASE_URI
+from sloovi_utils import generate_hash
 
 client = MongoClient(MONGO_DATABASE_URI)
 database = client.sloovi
@@ -31,7 +33,7 @@ class User:
         user_data = {
             "name": self.name,
             "email": self.email,
-            "password": self.password           # TODO: password must be hashed!
+            "password": generate_hash(self.password)
         }
         
         
@@ -91,7 +93,7 @@ class User:
         user_update = {
             "name": self.name,
             "email": self.email,
-            "password": self.password
+            "password": generate_hash(self.password)
         }
         
         user = self.fetch(self.email)
@@ -127,7 +129,7 @@ class Template:
         self.subject = subject
         self.body = body
         
-        
+    @classmethod
     def format(self, template):
         """Formats the Template data given a dictionary
 
@@ -167,9 +169,9 @@ class Template:
         # template does not exist, so create it
         self._template.insert_one(template_data)
         
-        return "Template with the name {self.name} has been created!"
+        return f"Template with the name {self.name} has been created!"
 
-      
+    @classmethod
     def fetch_all(self):
         '''Fetch all templates'''
         
@@ -178,13 +180,13 @@ class Template:
         # https://www.digitalocean.com/community/tutorials/understanding-list-comprehensions-in-python-3
         
         formatted_templates = [
-            self.format(template)
+            Template.format(template)
             for template in templates_cursor
         ]
         
         return formatted_templates
     
-    
+    @classmethod
     def fetch_one(self, id):
         """Fetch a Template with a given template id. This does not guaranty
         that the template is unique and will always be returned.
@@ -194,11 +196,11 @@ class Template:
         
         # if template does not exist
         if template == None:
-            return "Template with this name: {id} does not exist", 404
+            abort(404)
         
         return self.format(template)
 
-
+    @classmethod
     def update(self, id, name, subject, body):
         '''Update a Template with a given id and other parameters'''
         
@@ -213,9 +215,9 @@ class Template:
         if template == None:
             return f"Template with id: {id} was not found", 404
         else:
-            return template
+            return self.format(template)
         
-
+    @classmethod
     def delete_by_id(self, id):
         '''Delete a Template and return None if not found'''
         
@@ -228,4 +230,4 @@ class Template:
         
         deleted = self._template.find_one_and_delete({"name": self.name})
         
-        return deleted
+        return self.format(deleted)
