@@ -210,7 +210,7 @@ def update_template(id):
     return template
 
 
-@api_v1.route("/template/<int:id>", methods=["DELETE"])
+@api_v1.route("/template/<string:id>", methods=["DELETE"])
 def delete_template(id):
     """Delete Single Template
 
@@ -220,4 +220,8 @@ def delete_template(id):
     Returns:
         - success message
     """
-    return f"Hello Template with Id {id}"
+    deleted_template = Template.delete_by_id(id)
+    if deleted_template is None:
+        return f"Template with this ID: {id} does not exist!"
+    
+    return delete_template
