@@ -5,6 +5,7 @@
 """
 
 from flask import Flask
+from config import SESSION_SECRET
 from flaskr.controller import api_v1
 
 
@@ -17,6 +18,8 @@ def create_app():
     """
     
     app = Flask(__name__)
+    
+    app.config["SECRET_KEY"] = SESSION_SECRET
     
     app.register_blueprint(api_v1, url_prefix="/api/v1")
     
