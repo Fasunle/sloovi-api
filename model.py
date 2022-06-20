@@ -54,7 +54,7 @@ class User:
             return f"A new User with email {self.email} was created."
         
        
-    
+    @classmethod
     def fetch(self, email):
         '''Get a single User'''
         
@@ -66,7 +66,7 @@ class User:
         # format the data returned
         return self.format(user)
     
-    
+    @classmethod
     def format(self, user):
         """Format User data
 
