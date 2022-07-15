@@ -1,27 +1,24 @@
-"""Sloovi API Interview
+from flask import Flask, jsonify
 
-    Author: Kehinde Fasunle
-    email: kfasunle@gmail.com
-"""
 
-from flask import Flask
-from flask_cors import CORS
+app = Flask(__name__);
 
-from config import SESSION_SECRET
-from controller import api_v1
+@app.route("/hello")
+def index():
+    return "Hello world";
 
-def create_app():
-    app = Flask(__name__)
+@app.errorhandler(404)
+def not_found(error):
+    print(error)
+    return jsonify({
+        "code": 404,
+        "message": "Not found"
+    })
     
-    app.config["SECRET_KEY"] = SESSION_SECRET
-
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
-    app.register_blueprint(api_v1, url_prefix="/api/v1")
+@app.errorhandler(500)
+def server_error(error):
+    return jsonify({
+        "code": 500,
+        "message": "Server error"
+    }), 500
     
-    return app
-    
-
-if __name__ == "__main__":
-    app = create_app()
-    
-    app.run()
