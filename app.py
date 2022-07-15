@@ -3,9 +3,9 @@ from flask import Flask, jsonify
 
 app = Flask(__name__);
 
-@app.route("/hello")
+@app.route('/', methods=["GET"])
 def index():
-    return "Hello world";
+    return "<h1>Hello @Sloovi API developed by Kehinde Fasunle</h1>"
 
 @app.errorhandler(404)
 def not_found(error):
@@ -21,4 +21,3 @@ def server_error(error):
         "code": 500,
         "message": "Server error"
     }), 500
-    
