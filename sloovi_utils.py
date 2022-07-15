@@ -2,20 +2,19 @@
 """
 from datetime import timedelta
 from functools import wraps
+import os
 import bcrypt
 from flask import g, redirect, request, session, url_for
-import jwt
+import python_jwt as jwt, jwcrypto.jwk as jwk, datetime
 
-from config import (
-    SECRET,
-    TOKEN_EXPIRES
-)
+key = jwk.JWK.generate(kty='RSA', size=2048)
 
+SECRET = os.environ.get("SECRET") or "My Little Secret"
 
 def generate_token(user):
     '''Generate Token and Should expire after a set period'''
     
-    expires_at = timedelta(minutes=TOKEN_EXPIRES)
+    expires_at = timedelta(minutes=15)
     
     payload = {
         "email": user.get("email"),
@@ -25,7 +24,7 @@ def generate_token(user):
     
     # token = jwt.generate_jwt(payload, key, 'PS256', datetime.timedelta(minutes=TOKEN_EXPIRES))
     
-    token = jwt.encode(payload, SECRET, "HS256")
+    token = jwt.generate_jwt(payload, key, 'PS256', datetime.timedelta(minutes=15))
     return token
 
 
