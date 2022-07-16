@@ -4,7 +4,7 @@
 import json
 from flask import Blueprint, jsonify, redirect, request, url_for
 from model import create_new_template, create_user, delete_template, fetch_one_template, fetch_templates, fetch_user, update_template
-from sloovi_utils import generate_hash, generate_token
+from sloovi_utils import generate_hash, generate_token, login_required
 from validators import validate_template_data, validate_user_data, validate_user_login
 
 
@@ -103,6 +103,7 @@ def login_user():
 
 
 @api_v1.route("/template", methods=["GET"])
+@login_required
 def show_templates_controller():
     """Get All Template
 
@@ -115,6 +116,7 @@ def show_templates_controller():
 
 
 @api_v1.route("/template/<string:id>", methods=["GET"])
+@login_required
 def show_template_controller(id):
     """Get A Template
 
@@ -129,6 +131,7 @@ def show_template_controller(id):
 
 
 @api_v1.route("/template", methods=["POST"])
+@login_required
 def create_template_controller():
     """Create a new template
     
@@ -163,6 +166,7 @@ def create_template_controller():
 
 
 @api_v1.route("/template/<string:id>", methods=["PUT"])
+@login_required
 def update_template_controller(id):
     """Update Single Template
 
@@ -189,6 +193,7 @@ def update_template_controller(id):
 
 
 @api_v1.route("/template/<string:id>", methods=["DELETE"])
+@login_required
 def delete_template_controller(id):
     """Delete Single Template
 
