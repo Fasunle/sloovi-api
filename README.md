@@ -32,9 +32,63 @@ Returns: <h1>Hello @Sloovi API developed by Kehinde Fasunle</h1>
 Returns:  login token
 
 `POST /api/v1/login`
- 
+
 - Login a user if already registered
 - if not registered, return error message with 404
 
  Returns: login token
 
+`GET /api/v1/template`
+
+- Fetch all template
+- user must be logged in before making request to this endpoint
+
+Returns: A list of all templates
+
+`GET /api/v1/template/1`
+
+- Fetch a template with given id
+
+Returns: Template object
+
+e.g 
+
+```json
+
+{
+    "body": "I don't want to experience any form of war in my lifetime.",
+    "id": "62d20931f6d1815ea4477324",
+    "subject": "War causes misfortune",
+    "template_name": "War zone"
+}
+```
+
+`POST /api/v1/template`
+
+- Create a template
+
+Returns: Template with the name: has been created!
+
+`PUT /api/v1/template/1`
+
+- Update a template
+
+Returns: Return update template
+
+e.g
+
+```json
+
+{
+    "id": "vdaey8tw78dtas",
+    "template_name": "School",
+    "subject": "How to excel",
+    "body": "Strong determination not to fail"
+}
+```
+
+`DELETE /api/v1/template/1`
+
+- Delete Single Template
+
+Returns: Deleted template
