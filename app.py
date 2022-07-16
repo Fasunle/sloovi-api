@@ -1,9 +1,12 @@
+import os
 from flask import Flask, jsonify
 from controllers import api_v1
 from get_db import get_db
 
 
 app = Flask(__name__);
+
+app.secret_key= os.environ.get("SECRET")
 app.register_blueprint(api_v1, url_prefix="/api/v1/");
 with app.app_context():
     get_db();

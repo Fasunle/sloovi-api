@@ -1,37 +1,33 @@
 """Sloovi Utility module
 """
-from datetime import timedelta
 from functools import wraps
 import os
 import bcrypt
-from flask import g, redirect, request, session, url_for
-import python_jwt as jwt, jwcrypto.jwk as jwk, datetime
+from flask import g, redirect, request, session, url_for, abort
+from jose import jws
 
-key = jwk.JWK.generate(kty='RSA', size=2048)
 
-SECRET = os.environ.get("SECRET") or "My Little Secret"
+SECRET = os.environ.get("SECRET")
 
 def generate_token(user):
     '''Generate Token and Should expire after a set period'''
     
-    expires_at = timedelta(minutes=15)
-    
     payload = {
         "email": user.get("email"),
-        "password": user.get("password"),
-        "exp": expires_at
     }
     
-    # token = jwt.generate_jwt(payload, key, 'PS256', datetime.timedelta(minutes=TOKEN_EXPIRES))
-    
-    token = jwt.generate_jwt(payload, key, 'PS256', datetime.timedelta(minutes=15))
+    token = jws.sign(payload, SECRET, algorithm="HS256")
     return token
 
 
-def  confirm_token(token):
+def  confirm_token(token:str):
     '''Confirms if the token is valid'''
-    claims = jwt.decode(token, SECRET, algorithms=["HS256"])
-    return claims
+
+    try:
+        claims = jws.verify(token, SECRET, algorithms=["HS256"]).decode("utf-8")
+        return claims
+    except :
+        abort(401, "Invalid token")
 
 
 def generate_hash(password : str) -> str:
@@ -61,7 +57,7 @@ def login_required(func):
 
         if authorization is None:
             session.clear()
-            return redirect(url_for("api_v1.login_user"))
+            return redirect(url_for("v1.login_user"))
         
         token = authorization.split(' ')[1]
         claims = confirm_token(token)
