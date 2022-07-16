@@ -3,13 +3,14 @@
 
 import json
 from flask import Blueprint, jsonify, redirect, request, url_for
+from flask_cors import CORS
 from model import create_new_template, create_user, delete_template, fetch_one_template, fetch_templates, fetch_user, update_template
 from sloovi_utils import generate_hash, generate_token, login_required
 from validators import validate_template_data, validate_user_data, validate_user_login
 
 
 api_v1  = Blueprint("v1", __name__);
-
+CORS(api_v1)    # CORS protection on the version 1 alone
 
 @api_v1.route("/register", methods=["POST"])
 def register_user():
