@@ -1,5 +1,4 @@
 import json
-from re import sub
 from flask import (
     Blueprint,
     abort,
@@ -8,7 +7,11 @@ from flask import (
     request,
     url_for
 )
-from sloovi_utils import generate_hash, generate_token, login_required
+from sloovi_utils import (
+    generate_hash, 
+    generate_token, 
+    login_required
+)
 from model import (
     User,
     Template
