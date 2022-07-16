@@ -16,8 +16,25 @@ This Backend Interview tests API development.
 ├── Procfile    Heroku Deployment script
 ```
 
+## API Endpoints Examples
+
 `GET /`
 
 - welcome user with a simple message
 
 Returns: <h1>Hello @Sloovi API developed by Kehinde Fasunle</h1>
+
+`POST /api/v1/register`
+
+- Registers a new user if not exist
+- Redirect to login endpoint
+
+Returns:  login token
+
+`POST /api/v1/login`
+ 
+- Login a user if already registered
+- if not registered, return error message with 404
+
+ Returns: login token
+
