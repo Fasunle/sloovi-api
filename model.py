@@ -2,7 +2,6 @@
 
 
 from bson import ObjectId
-from bson.json_util import dumps
 from flask import abort
 
 from get_db import database
