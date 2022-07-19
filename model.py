@@ -2,7 +2,7 @@
 
 
 from bson import ObjectId
-from flask import abort
+from flask import g
 
 from get_db import database
 from sloovi_utils import generate_hash
@@ -135,9 +135,11 @@ def format_template(template):
     
 def create_new_template(name, subject, body):
     '''Create a new Template'''
-    
-    template_filter = {"name": name, "subject": subject}
-    template_data = {"name": name, "subject": subject, "body": body}
+
+    creator_id = g.get("user")["user_id"]
+
+    template_filter = {"name": name, "subject": subject, "creator": creator_id}
+    template_data = {"name": name, "subject": subject, "body": body, "creator": creator_id}
     
     # find if template already exist
     template = database.template.find_one(template_filter)
@@ -157,7 +159,8 @@ def create_new_template(name, subject, body):
 def fetch_templates():
     '''Fetch all templates'''
     
-    templates_cursor = database.template.find()
+    creator_id = g.get("user")["user_id"]
+    templates_cursor = database.template.find({"creator": creator_id})
     
     # https://www.digitalocean.com/community/tutorials/understanding-list-comprehensions-in-python-3
     
@@ -175,22 +178,25 @@ def fetch_one_template(id):
     """
     # placeholder
     template = None
+    creator_id = g.get("user")["user_id"]
     
     try:
-        template = database.template.find_one({"_id": ObjectId(id)})
+        template = database.template.find_one({"_id": ObjectId(id), "creator": creator_id})
     except :
         return f"Error occured while fetching template with id: {id}"
     
     # if template does not exist
     if template == None:
-        abort(404)
+        return {}
     
     return format_template(template)
 
 
 def update_template(id, name, subject, body):
     '''Update a Template with a given id and other parameters'''
-    
+
+    creator_id = g.get("user")["user_id"]
+
     template_update = {
         'name': name,
         'subject': subject,
@@ -200,21 +206,22 @@ def update_template(id, name, subject, body):
     template = None
 
     try:
-        template = database.template.find_one_and_update({"_id": ObjectId(id)}, {"$set": template_update})
+        template = database.template.find_one_and_update({"_id": ObjectId(id), "creator": creator_id}, {"$set": template_update})
         
         if template == None:
-            return f"Template with id: {id} was not found", 404
+            return {}, 404
         
         template = database.template.find_one({"_id": ObjectId(id)})
     except :
-        return f"Template with id: {id} couldn't update", 400
+        return {}, 400
     
     return format_template(template)
         
 
 def delete_template(id):
     '''Delete a Template and return None if not found'''
-    
-    deleted = database.template.find_one_and_delete({"_id": ObjectId(id)})
+
+    creator_id = g.get("user")["user_id"]
+    deleted = database.template.find_one_and_delete({"_id": ObjectId(id), "creator": creator_id})
     
     return deleted
