@@ -6,6 +6,8 @@ import bcrypt
 from flask import g, redirect, request, session, url_for, abort
 from jose import jws
 
+from utils import set_user_to_session
+
 
 SECRET = os.environ.get("SECRET")
 
@@ -63,5 +65,7 @@ def login_required(func):
         claims = confirm_token(token)
         session["user"] = claims
         g.user = claims
+        # fetch user data and include user_id
+        set_user_to_session()
         return func(*args, **kwargs)
     return wrapped
