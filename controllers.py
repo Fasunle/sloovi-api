@@ -209,3 +209,33 @@ def delete_template_controller(id):
         return f"Template with this ID: {id} does not exist!"
     
     return delete_template
+
+
+@api_v1.errorhandler(404)
+def not_found(error):
+    print(error)
+    return jsonify({
+        "code": 404,
+        "message": "Not found"
+    })
+    
+@api_v1.errorhandler(500)
+def server_error(error):
+    return jsonify({
+        "code": 500,
+        "message": "Server error"
+    }), 500
+
+@api_v1.errorhandler(403)
+def unauthorized_error(error):
+    return jsonify({
+        "code": 403,
+        "message": "Unauthorized Error"
+    }), 403
+
+@api_v1.errorhandler(422)
+def unprocessable_error(error):
+    return jsonify({
+        "code": 422,
+        "message": "Unprocessable Error"
+    }), 422
